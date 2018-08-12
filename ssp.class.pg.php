@@ -37,7 +37,7 @@ class SSP {
                 if (isset($column['formatter'])) {
                     $row[$column['dt']] = $column['formatter']( $data[$i][ $column['db'] ], $data[$i]);
                 } else if (isset($column['href'])) {
-                    $row[$column['dt']] = "<a href='" . $column['href'] . "?" . $column['db'] . "=" . $data[$i][ $column['db'] ] . "'>" . $data[$i][ $columns[$j]['db']] . "</a>";
+                    $row[$column['dt']] = "<a href='" . $column['href'] . "?" . $column['db'] . "=" . $data[$i][$column['db'] ] . "'>" . $data[$i][$columns[$j]['db']] . "</a>";
                 }
                 else {
                     $row[$column['dt']] = $data[$i][$columns[$j]['db']];
@@ -84,7 +84,7 @@ class SSP {
      *  @return string SQL limit clause
      */
 
-    static function limit ( $request, $columns )
+    static function limit ($request, $columns)
     {
         $limit = '';
  
@@ -106,20 +106,20 @@ class SSP {
      *  @return string SQL order by clause
      */
 
-    static function order ( $request, $columns )
+    static function order ($request, $columns)
     {
         $order = '';
  
         if (isset($request['order']) && count($request['order'])) {
             $orderBy = array();
-            $dtColumns = self::pluck( $columns, 'dt' );
+            $dtColumns = self::pluck($columns, 'dt');
  
             for ($i=0, $ien=count($request['order']); $i<$ien; $i++) {
                 // Convert the column index into the column data property
                 $columnIdx = intval($request['order'][$i]['column']);
                 $requestColumn = $request['columns'][$columnIdx];
  
-                $columnIdx = array_search( $requestColumn['data'], $dtColumns);
+                $columnIdx = array_search($requestColumn['data'], $dtColumns);
                 $column = $columns[$columnIdx];
  
                 if ($requestColumn['orderable'] == 'true') {
@@ -166,11 +166,11 @@ class SSP {
                    
             for ($i=0, $ien=count($request['columns']); $i<$ien; $i++) {
                 $requestColumn = $request['columns'][$i];
-                $columnIdx = array_search( $requestColumn['data'], $dtColumns);
+                $columnIdx = array_search($requestColumn['data'], $dtColumns);
                 $column = $columns[$columnIdx];
  
                 if ($requestColumn['searchable'] == 'true') {
-                    $binding = self::bind( $bindings, '%' . $str . '%', PDO::PARAM_STR); 
+                    $binding = self::bind($bindings, '%' . $str . '%', PDO::PARAM_STR); 
                     $globalSearch[] = "CAST(" . $column['db'] . " as text) ILIKE " . $binding;
                 }
             }
@@ -181,7 +181,7 @@ class SSP {
             for ($i=0, $ien=count($request['columns']); $i<$ien; $i++) { 
                 $requestColumn = $request['columns'][$i];
                 $columnIdx = array_search( $requestColumn['data'], $dtColumns);
-                $column = $columns[ $columnIdx ];
+                $column = $columns[$columnIdx];
  
                 $str = $requestColumn['search']['value'];
  
@@ -196,11 +196,11 @@ class SSP {
         // Combine the filters into a single string
         $where = '';
  
-        if (count( $globalSearch)) {
+        if (count($globalSearch)) {
             $where = '(' . implode(' OR ', $globalSearch) . ')';
         }
  
-        if (count( $columnSearch)) {
+        if (count($columnSearch)) {
             $where = $where === '' ?
                 implode(' AND ', $columnSearch) :
                 $where . ' AND ' . implode(' AND ', $columnSearch);   
@@ -251,7 +251,7 @@ class SSP {
           
              
           // Data set length after filtering
-        if ( isset( $data[0]['full_count'])) {
+        if (isset($data[0]['full_count'])) {
           $recordsFiltered = $data[0]['full_count']; 
         } else {
           $recordsFiltered = 0;   
@@ -350,7 +350,7 @@ class SSP {
             
  
         // Data set length after filtering
-        if ( isset( $data[0]['full_count'] ) ) {
+        if (isset( $data[0]['full_count'])) {
             $recordsFiltered = $data[0]['full_count']; 
         } else {
             $recordsFiltered = 0;
@@ -427,7 +427,7 @@ class SSP {
     static function sql_exec ($db, $bindings, $sql=null)
     {
         // Argument shifting
-        if ( $sql === null ) {
+        if ($sql === null) {
             $sql = $bindings;
         }
  
@@ -536,7 +536,7 @@ class SSP {
     static function _flatten ($a, $join = ' AND ')
     {         
  
-        if ( ! $a ) {
+        if (!$a) {
             return '';
         }
         else if ($a && is_array($a)) {
